@@ -6,8 +6,11 @@ namespace Quantum.QAOA
 {
     class Driver
     {
+
+
         static void Main(string[] args)
         {
+
             using (var qsim = new QuantumSimulator())
             {
                 double[] dtx = { 0.619193, 0.742566, 0.060035, -1.568955, 0.045490 };
@@ -32,6 +35,8 @@ namespace Quantum.QAOA
                     var result = QAOARunner.Run(qsim, 6, tx, tz, h, J, 5).Result;
                     Console.WriteLine(result);
                 }
+
+               
             }
         }
     }
