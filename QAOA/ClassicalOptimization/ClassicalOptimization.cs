@@ -9,10 +9,10 @@ using Microsoft.Quantum.Simulation.Simulators;
 namespace Quantum.QAOA
 
 {
-    public struct DataVectors
+    public struct FreeParamsVector
     {
-        public Double[] beta;
-        public Double[] gamma;
+        public double[] beta;
+        public double[] gamma;
     }
 
     public struct OptimalSolution
@@ -25,7 +25,7 @@ namespace Quantum.QAOA
 
     public class ClassicalOptimization //currently support up to 2-local Hamiltonians; will be generalized later
     {
-        DataVectors dataVectors;
+        FreeParamsVector FreeParamsVector;
         int numberOfIterations;
         int p;
         ProblemInstance problemInstance;
@@ -42,35 +42,35 @@ namespace Quantum.QAOA
             this.numberOfIterations = numberOfIterations;
             this.p = p;
             this.problemInstance = problemInstance;
-            dataVectors.beta = initialBeta;
-            dataVectors.gamma = initialGamma;
+            FreeParamsVector.beta = initialBeta;
+            FreeParamsVector.gamma = initialGamma;
             bestHamiltonian = Double.MaxValue;
             bestVector = null;
             this.numberOfRandomStartingPoints = numberOfRandomStartingPoints;
         }
 
-        public Double[] convertUserDataToDataVector()
+        public double[] convertUserDataTofreeParamsVector()
         {
-            return dataVectors.beta.Concat(dataVectors.gamma).ToArray();
+            return FreeParamsVector.beta.Concat(FreeParamsVector.gamma).ToArray();
         }
 
-        public DataVectors convertDataVectorToVectors(Double[] bigDataVector)
+        public FreeParamsVector convertfreeParamsVectorToVectors(double[] bigfreeParamsVector)
         {
             int betaTermsNumber = p;
             int gammaTermsNumber = p;
 
-            DataVectors dataVector = new DataVectors
+            FreeParamsVector freeParamsVector = new FreeParamsVector
             {
 
-                beta = bigDataVector[0..betaTermsNumber],
-                gamma = bigDataVector[betaTermsNumber..(betaTermsNumber + gammaTermsNumber)],
+                beta = bigfreeParamsVector[0..betaTermsNumber],
+                gamma = bigfreeParamsVector[betaTermsNumber..(betaTermsNumber + gammaTermsNumber)],
 
             };
 
-            return dataVector;
+            return freeParamsVector;
         }
 
-        public Double evaluateCostFunction(String result, Double[] costs)
+        public Double evaluateCostFunction(string result, double[] costs)
         {
             double costFunctionValue = 0;
             for (int i = 0; i < problemInstance.ProblemSizeInBits; i++)
@@ -81,7 +81,7 @@ namespace Quantum.QAOA
             return costFunctionValue;
         }
 
-        public Double evaluateHamiltonian(String result)
+        public double evaluateHamiltonian(string result)
         {
             double hamiltonianExpectation = 0;
             for (int i = 0; i < problemInstance.ProblemSizeInBits; i++)
@@ -99,20 +99,20 @@ namespace Quantum.QAOA
 
             return hamiltonianExpectation;
         }
-        public Double calculateObjectiveFunction(Double[] bigDataVector)
+        public Double calculateObjectiveFunction(double[] bigfreeParamsVector)
         {
-            DataVectors dataVector = this.convertDataVectorToVectors(bigDataVector);
-            Double hamiltonianExpectationValue = 0;
+            FreeParamsVector freeParamsVector = this.convertfreeParamsVectorToVectors(bigfreeParamsVector);
+            double hamiltonianExpectationValue = 0;
             List<bool[]> allSolutionVectors = new List<bool[]>();
             using (var qsim = new QuantumSimulator())
             {
-                var beta = new QArray<Double>(dataVector.beta);
+                var beta = new QArray<Double>(freeParamsVector.beta);
                 Console.WriteLine("Beta");
-                //Console.WriteLine(beta.Length);
+
                 Console.WriteLine(beta);
-                var gamma = new QArray<Double>(dataVector.gamma);
+                var gamma = new QArray<Double>(freeParamsVector.gamma);
                 Console.WriteLine("Gamma");
-                //Console.WriteLine(gamma.Length);
+
                 Console.WriteLine(gamma);
                 var oneLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.OneLocalHamiltonianCoefficients);
                 var twoLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.TwoLocalHamiltonianCoefficients);
@@ -123,8 +123,8 @@ namespace Quantum.QAOA
                     IQArray<bool> result = QAOARunner.Run(qsim, problemInstance.ProblemSizeInBits, beta, gamma, oneLocalHamiltonianCoefficients, twoLocalHamiltonianCoefficients, p).Result;
 
                     allSolutionVectors.Add(result.ToArray());
-                    String solutionVector = Utils.getBoolStringFromBoolArray(result.ToArray());
-                    Double hamiltonianValue = evaluateHamiltonian(solutionVector);
+                    string solutionVector = Utils.getBoolStringFromBoolArray(result.ToArray());
+                    double hamiltonianValue = evaluateHamiltonian(solutionVector);
                     hamiltonianExpectationValue += hamiltonianValue / numberOfIterations;
 
                 }
@@ -135,8 +135,8 @@ namespace Quantum.QAOA
             {
                 bestHamiltonian = hamiltonianExpectationValue;
                 bestVector = mostProbableSolutionVectorTemp;
-                bestBeta = dataVector.beta;
-                bestGamma = dataVector.gamma;
+                bestBeta = freeParamsVector.beta;
+                bestGamma = freeParamsVector.gamma;
             }
 
             Console.WriteLine("Best fidelity");
@@ -146,41 +146,37 @@ namespace Quantum.QAOA
             return hamiltonianExpectationValue;
         }
 
+        private NonlinearConstraint[] generateConstraints()
+        {
+
+            NonlinearConstraint[] constraints = new NonlinearConstraint[4*p];
+            foreach (var i in Enumerable.Range(0, p).Select(x => x * 2))
+            {
+                int gammaIndex = 2 * p + i;
+                constraints[i] = new NonlinearConstraint(2 * p, x => x[i/2] >= 0);
+                constraints[i + 1] = new NonlinearConstraint(2 * p, x => x[i/2] <= Math.PI);
+                constraints[gammaIndex] = new NonlinearConstraint(2 * p, x => x[gammaIndex / 2] >= 0);
+                constraints[gammaIndex + 1] = new NonlinearConstraint(2 * p, x => x[gammaIndex / 2] <= 2 * Math.PI);
+            }
+            return constraints;
+            
+        }
+
         public OptimalSolution runOptimization()
         {
-            Double[] bigDataVector = convertUserDataToDataVector();
+            double[] bigfreeParamsVector = convertUserDataTofreeParamsVector();
 
             Func<Double[], Double> objectiveFunction = calculateObjectiveFunction;
-            var constraints = new[]
-                {
-                    new NonlinearConstraint(2*p, x =>  x[0] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[0] <= Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[1] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[1] <= Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[2] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[2] <= Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[3] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[3] <= Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[4] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[4] <= Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[5] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[5] <= 2*Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[6] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[6] <= 2*Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[7] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[7] <= 2*Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[8] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[8] <= 2*Math.PI),
-                    new NonlinearConstraint(2*p, x =>  x[9] >= 0),
-                    new NonlinearConstraint(2*p, x =>  x[9] <= 2*Math.PI),
-
-                };
+            
             var optimizerObjectiveFunction = new NonlinearObjectiveFunction(2 * p, objectiveFunction);
 
+            NonlinearConstraint[] constraints = generateConstraints();
+            
+            Console.WriteLine("After");
 
             for (int i = 0; i < numberOfRandomStartingPoints; i++)
             {
-                var cobyla = new Cobyla(optimizerObjectiveFunction);
+                var cobyla = new Cobyla(optimizerObjectiveFunction, constraints);
                 double[] randomVector = Utils.getRandomVectorOfSize(2 * p);
                 Console.WriteLine("Random vector:");
                 Console.WriteLine(randomVector);
