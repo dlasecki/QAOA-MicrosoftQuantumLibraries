@@ -11,8 +11,8 @@ namespace Quantum.QAOA
 {
     public struct FreeParamsVector
     {
-        public double[] beta;
-        public double[] gamma;
+        public Double[] beta;
+        public Double[] gamma;
     }
 
     public struct OptimalSolution
@@ -36,7 +36,7 @@ namespace Quantum.QAOA
         int numberOfRandomStartingPoints;
 
 
-        public ClassicalOptimization(int numberOfIterations, int p, ProblemInstance problemInstance, Double[] initialBeta, Double[] initialGamma, int numberOfRandomStartingPoints)
+        public ClassicalOptimization(int numberOfIterations, int p, ProblemInstance problemInstance, int numberOfRandomStartingPoints = 1, Double[] initialBeta = null, Double[] initialGamma = null)
         {
 
             this.numberOfIterations = numberOfIterations;
@@ -47,11 +47,6 @@ namespace Quantum.QAOA
             bestHamiltonian = Double.MaxValue;
             bestVector = null;
             this.numberOfRandomStartingPoints = numberOfRandomStartingPoints;
-        }
-
-        public double[] convertUserDataTofreeParamsVector()
-        {
-            return FreeParamsVector.beta.Concat(FreeParamsVector.gamma).ToArray();
         }
 
         public FreeParamsVector convertfreeParamsVectorToVectors(double[] bigfreeParamsVector)
@@ -161,26 +156,46 @@ namespace Quantum.QAOA
             return constraints;
             
         }
+        public double[] setUpFreeParameters()
+        {
+            double[] betaCoefficients;
+            if (FreeParamsVector.beta != null)
+            {
+                betaCoefficients = FreeParamsVector.beta;
+            }
+            else
+            {
+                betaCoefficients = Utils.getRandomVector(p, Math.PI);
+            }
+
+            double[] gammaCoefficients;
+            if (FreeParamsVector.gamma != null)
+            {
+                gammaCoefficients = FreeParamsVector.gamma;
+            }
+            else
+            {
+                gammaCoefficients = Utils.getRandomVector(p, 2 * Math.PI);
+            }
+
+           return betaCoefficients.Concat(gammaCoefficients).ToArray();
+        }
 
         public OptimalSolution runOptimization()
         {
-            double[] bigfreeParamsVector = convertUserDataTofreeParamsVector();
+            //double[] bigfreeParamsVector = convertUserDataTofreeParamsVector();
 
             Func<Double[], Double> objectiveFunction = calculateObjectiveFunction;
             
             var optimizerObjectiveFunction = new NonlinearObjectiveFunction(2 * p, objectiveFunction);
 
             NonlinearConstraint[] constraints = generateConstraints();
-            
-            Console.WriteLine("After");
 
             for (int i = 0; i < numberOfRandomStartingPoints; i++)
             {
                 var cobyla = new Cobyla(optimizerObjectiveFunction, constraints);
-                double[] randomVector = Utils.getRandomVectorOfSize(2 * p);
-                Console.WriteLine("Random vector:");
-                Console.WriteLine(randomVector);
-                bool success = cobyla.Minimize(randomVector);
+                double[] freeParameters = setUpFreeParameters();
+                bool success = cobyla.Minimize(freeParameters);
                 Console.WriteLine("Was success?");
                 Console.WriteLine(success);
 

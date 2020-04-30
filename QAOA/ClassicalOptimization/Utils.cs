@@ -6,13 +6,13 @@ namespace Quantum.QAOA
 {
     public class Utils
     {
-        public static double[] getRandomVectorOfSize(int length)
+        public static double[] getRandomVector(int length, double maximum)
         {
             var rand = new Random();
             double[] randomVector = new double[length];
             for (int i = 0; i < length; i++)
             {
-                randomVector[i] = Math.PI * rand.NextDouble();
+                randomVector[i] = maximum * rand.NextDouble();
             }
 
             return randomVector;
