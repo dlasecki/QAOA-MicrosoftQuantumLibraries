@@ -1,3 +1,5 @@
+[![Unitary Fund](https://img.shields.io/badge/Supported%20By-UNITARY%20FUND-brightgreen.svg?style=for-the-badge)](http://unitary.fund)
+
 # QAOA in Q#
 
 The project is still in progress. This readme will be extended once the project is ready.
