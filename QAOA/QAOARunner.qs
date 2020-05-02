@@ -3,6 +3,7 @@
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Intrinsic;
 
+    //this implementation in inspired by https://github.com/stephenjordan/qaoa_tsp
 
     operation QAOARunner(problemSize: Int, beta: Double[], gamma: Double[], h: Double[], J: Double[], p: Int) : Bool[]
     {

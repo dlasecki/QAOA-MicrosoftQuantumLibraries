@@ -3,6 +3,8 @@
    open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Intrinsic;
 
+    //this implementation in inspired by https://github.com/stephenjordan/qaoa_tsp
+
 
     operation MixingHamiltonianEvolution(qubits: Qubit[], beta: Double) : Unit
     {
