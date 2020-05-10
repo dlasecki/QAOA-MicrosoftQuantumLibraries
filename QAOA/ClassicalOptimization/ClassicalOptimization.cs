@@ -49,6 +49,19 @@ namespace Quantum.QAOA
             this.numberOfRandomStartingPoints = numberOfRandomStartingPoints;
         }
 
+        /// # Summary
+        /// Converts concatenated beta and gamma vectors into separate beta and gamma vector.
+        ///
+        /// # Input
+        /// ## bigfreeParamsVector
+        /// Concatenated beta and gamma vectors.
+        ///
+        /// # Output
+        /// FreeParamsVector that contains beta and gamma vectors.
+        ///
+        /// # Remarks
+        /// Useful for getting beta and gamma vectors from a concatenated vector inside the optimized function.
+
         public FreeParamsVector convertfreeParamsVectorToVectors(double[] bigfreeParamsVector)
         {
             int betaTermsNumber = p;
@@ -76,6 +89,19 @@ namespace Quantum.QAOA
             return costFunctionValue;
         }
 
+        /// # Summary
+        /// Calculates the value of the objective function Hamiltonian for a binary string provided.
+        ///
+        /// # Input
+        /// ## result
+        /// A binary string. In this context it is a result that we get after measuring the QAOA state.
+        ///
+        /// # Output
+        /// The value of the objective function Hamiltonian.
+        ///
+        /// # Remarks
+        /// In the binary string, 0 is mapped to 1 and 1 is mapped to -1 since (-1,1) are eigenvalues of the Z operator which is currently supported in this implementation.
+
         public double evaluateHamiltonian(string result)
         {
             double hamiltonianValue = 0;
@@ -102,13 +128,13 @@ namespace Quantum.QAOA
             using (var qsim = new QuantumSimulator())
             {
                 var beta = new QArray<Double>(freeParamsVector.beta);
-                Console.WriteLine("Beta");
-
+                Console.WriteLine("Current beta vector:");
                 Console.WriteLine(beta);
-                var gamma = new QArray<Double>(freeParamsVector.gamma);
-                Console.WriteLine("Gamma");
 
+                var gamma = new QArray<Double>(freeParamsVector.gamma);
+                Console.WriteLine("Current gamma vector:");
                 Console.WriteLine(gamma);
+
                 var oneLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.OneLocalHamiltonianCoefficients);
                 var twoLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.TwoLocalHamiltonianCoefficients);
 
@@ -141,6 +167,15 @@ namespace Quantum.QAOA
             return hamiltonianExpectationValue;
         }
 
+        /// # Summary
+        /// Generates constraints for elements in beta and gamma vectors.
+        ///
+        /// # Output
+        /// Generated constraints.
+        ///
+        /// # Remarks
+        /// For the canonical choice of the mixing Hamiltonian (i.e. the sum of X operators acting on single qubits), the range of values in the beta vector is 0 <= beta_i <= PI.
+        /// For the objective function Hamiltonian based on Z operators, the range of values in the gamma vector is 0 <= beta_i <= 2PI.
         private NonlinearConstraint[] generateConstraints()
         {
 
