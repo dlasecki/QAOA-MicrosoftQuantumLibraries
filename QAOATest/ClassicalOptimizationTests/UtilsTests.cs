@@ -25,7 +25,7 @@ namespace QAOATest.ClassicalOptimizationTests
 
             string expectedResult = "001";
 
-            string result = Utils.getModeFromBoolList(listOfBools);
+            string result = ClassicalOptimizationUtils.getModeFromBoolList(listOfBools);
 
             Assert.AreEqual(expectedResult, result, "Mode bool string not found correctly.");
 
@@ -40,7 +40,7 @@ namespace QAOATest.ClassicalOptimizationTests
 
             string expectedResult = "001";
 
-            string result = Utils.getBoolStringFromBoolArray(boolsArray);
+            string result = ClassicalOptimizationUtils.getBoolStringFromBoolArray(boolsArray);
 
             Assert.AreEqual(expectedResult, result, "Bool string not created correctly.");
 

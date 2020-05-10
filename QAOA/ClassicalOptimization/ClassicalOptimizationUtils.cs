@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Quantum.QAOA
 {
-    public class Utils
+    public class ClassicalOptimizationUtils
     {
         public static double[] getRandomVector(int length, double maximum)
         {

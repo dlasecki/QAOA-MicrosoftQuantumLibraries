@@ -78,21 +78,21 @@ namespace Quantum.QAOA
 
         public double evaluateHamiltonian(string result)
         {
-            double hamiltonianExpectation = 0;
+            double hamiltonianValue = 0;
             for (int i = 0; i < problemInstance.ProblemSizeInBits; i++)
             {
-                hamiltonianExpectation += problemInstance.OneLocalHamiltonianCoefficients[i] * (1 - 2 * Char.GetNumericValue(result[i]));
+                hamiltonianValue += problemInstance.OneLocalHamiltonianCoefficients[i] * (1 - 2 * Char.GetNumericValue(result[i]));
             }
 
             for (int i = 0; i < problemInstance.ProblemSizeInBits; i++)
             {
                 for (int j = i + 1; j < problemInstance.ProblemSizeInBits; j++)
                 {
-                    hamiltonianExpectation += problemInstance.TwoLocalHamiltonianCoefficients[i * problemInstance.ProblemSizeInBits + j] * (1 - 2 * Char.GetNumericValue(result[i])) * (1 - 2 * Char.GetNumericValue(result[j]));
+                    hamiltonianValue += problemInstance.TwoLocalHamiltonianCoefficients[i * problemInstance.ProblemSizeInBits + j] * (1 - 2 * Char.GetNumericValue(result[i])) * (1 - 2 * Char.GetNumericValue(result[j]));
                 }
             }
 
-            return hamiltonianExpectation;
+            return hamiltonianValue;
         }
         public Double calculateObjectiveFunction(double[] bigfreeParamsVector)
         {
@@ -118,14 +118,14 @@ namespace Quantum.QAOA
                     IQArray<bool> result = QAOARunner.Run(qsim, problemInstance.ProblemSizeInBits, beta, gamma, oneLocalHamiltonianCoefficients, twoLocalHamiltonianCoefficients, p).Result;
 
                     allSolutionVectors.Add(result.ToArray());
-                    string solutionVector = Utils.getBoolStringFromBoolArray(result.ToArray());
+                    string solutionVector = ClassicalOptimizationUtils.getBoolStringFromBoolArray(result.ToArray());
                     double hamiltonianValue = evaluateHamiltonian(solutionVector);
                     hamiltonianExpectationValue += hamiltonianValue / numberOfIterations;
 
                 }
 
             }
-            String mostProbableSolutionVectorTemp = Utils.getModeFromBoolList(allSolutionVectors);
+            String mostProbableSolutionVectorTemp = ClassicalOptimizationUtils.getModeFromBoolList(allSolutionVectors);
             if (hamiltonianExpectationValue < this.bestHamiltonian)
             {
                 bestHamiltonian = hamiltonianExpectationValue;
@@ -165,7 +165,7 @@ namespace Quantum.QAOA
             }
             else
             {
-                betaCoefficients = Utils.getRandomVector(p, Math.PI);
+                betaCoefficients = ClassicalOptimizationUtils.getRandomVector(p, Math.PI);
             }
 
             double[] gammaCoefficients;
@@ -175,7 +175,7 @@ namespace Quantum.QAOA
             }
             else
             {
-                gammaCoefficients = Utils.getRandomVector(p, 2 * Math.PI);
+                gammaCoefficients = ClassicalOptimizationUtils.getRandomVector(p, 2 * Math.PI);
             }
 
            return betaCoefficients.Concat(gammaCoefficients).ToArray();
