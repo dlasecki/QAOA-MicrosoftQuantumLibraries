@@ -15,7 +15,7 @@ How to run it?
 
 The high-level diagram of the implementation:
 
-![QAOA diagram](https://drive.google.com/file/d/14bDvgXkkcd_KcaiJw8yjVvL4DFdgshag/view?usp=sharing)
+![QAOA diagram](https://postimg.cc/XpQTBTnw)
 
 Dependencies:
 
