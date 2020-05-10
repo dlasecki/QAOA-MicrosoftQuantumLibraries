@@ -13,6 +13,10 @@ How to run it?
 1) Import this project to Microsoft Visual Studio or similar.
 2) Use Driver.cs to prepare your ProblemInstance and run the project.
 
+The high-level diagram of the implementation:
+
+![QAOA diagram](https://drive.google.com/file/d/14bDvgXkkcd_KcaiJw8yjVvL4DFdgshag/view?usp=sharing)
+
 Dependencies:
 
 1) [Q# and Microsoft Quantum Libraries](https://docs.microsoft.com/en-us/quantum/language/)
