@@ -9,12 +9,6 @@ using Microsoft.Quantum.Simulation.Simulators;
 namespace Quantum.QAOA
 
 {
-    public struct FreeParamsVector
-    {
-        public Double[] beta;
-        public Double[] gamma;
-    }
-
     public struct OptimalSolution
     {
         public String optimalVector;
@@ -25,7 +19,7 @@ namespace Quantum.QAOA
 
     public class ClassicalOptimization //currently support up to 2-local Hamiltonians; will be generalized later
     {
-        FreeParamsVector FreeParamsVector;
+        ClassicalOptimizationUtils.FreeParamsVector FreeParamsVector;
         int numberOfIterations;
         int p;
         ProblemInstance problemInstance;
@@ -49,34 +43,7 @@ namespace Quantum.QAOA
             this.numberOfRandomStartingPoints = numberOfRandomStartingPoints;
         }
 
-        /// # Summary
-        /// Converts concatenated beta and gamma vectors into separate beta and gamma vector.
-        ///
-        /// # Input
-        /// ## bigfreeParamsVector
-        /// Concatenated beta and gamma vectors.
-        ///
-        /// # Output
-        /// FreeParamsVector that contains beta and gamma vectors.
-        ///
-        /// # Remarks
-        /// Useful for getting beta and gamma vectors from a concatenated vector inside the optimized function.
 
-        public FreeParamsVector convertfreeParamsVectorToVectors(double[] bigfreeParamsVector)
-        {
-            int betaTermsNumber = p;
-            int gammaTermsNumber = p;
-
-            FreeParamsVector freeParamsVector = new FreeParamsVector
-            {
-
-                beta = bigfreeParamsVector[0..betaTermsNumber],
-                gamma = bigfreeParamsVector[betaTermsNumber..(betaTermsNumber + gammaTermsNumber)],
-
-            };
-
-            return freeParamsVector;
-        }
 
         public Double evaluateCostFunction(string result, double[] costs)
         {
@@ -122,7 +89,7 @@ namespace Quantum.QAOA
         }
         public Double calculateObjectiveFunction(double[] bigfreeParamsVector)
         {
-            FreeParamsVector freeParamsVector = this.convertfreeParamsVectorToVectors(bigfreeParamsVector);
+            ClassicalOptimizationUtils.FreeParamsVector freeParamsVector = ClassicalOptimizationUtils.convertVectorIntoHalves(bigfreeParamsVector);
             double hamiltonianExpectationValue = 0;
             List<bool[]> allSolutionVectors = new List<bool[]>();
             using (var qsim = new QuantumSimulator())
@@ -146,12 +113,22 @@ namespace Quantum.QAOA
                     allSolutionVectors.Add(result.ToArray());
                     string solutionVector = ClassicalOptimizationUtils.getBoolStringFromBoolArray(result.ToArray());
                     double hamiltonianValue = evaluateHamiltonian(solutionVector);
-                    hamiltonianExpectationValue += hamiltonianValue / numberOfIterations;
+                    hamiltonianExpectationValue += hamiltonianValue;
 
                 }
+                hamiltonianExpectationValue /= numberOfIterations;
 
             }
             String mostProbableSolutionVectorTemp = ClassicalOptimizationUtils.getModeFromBoolList(allSolutionVectors);
+            updateBestSolution(hamiltonianExpectationValue, mostProbableSolutionVectorTemp, freeParamsVector);
+            printCurrentBestSolution();
+
+
+            return hamiltonianExpectationValue;
+        }
+
+        private void updateBestSolution(double hamiltonianExpectationValue, String mostProbableSolutionVectorTemp, ClassicalOptimizationUtils.FreeParamsVector freeParamsVector)
+        {
             if (hamiltonianExpectationValue < this.bestHamiltonian)
             {
                 bestHamiltonian = hamiltonianExpectationValue;
@@ -159,12 +136,14 @@ namespace Quantum.QAOA
                 bestBeta = freeParamsVector.beta;
                 bestGamma = freeParamsVector.gamma;
             }
+        }
 
-            Console.WriteLine("Best fidelity");
+        private void printCurrentBestSolution()
+        {
+            Console.WriteLine("Current best fidelity");
             Console.WriteLine(this.bestHamiltonian);
-            Console.WriteLine("Best string");
+            Console.WriteLine("Current best string");
             Console.WriteLine(this.bestVector);
-            return hamiltonianExpectationValue;
         }
 
         /// # Summary
@@ -197,6 +176,7 @@ namespace Quantum.QAOA
             if (FreeParamsVector.beta != null)
             {
                 betaCoefficients = FreeParamsVector.beta;
+                FreeParamsVector.beta = null;
             }
             else
             {
@@ -207,6 +187,7 @@ namespace Quantum.QAOA
             if (FreeParamsVector.gamma != null)
             {
                 gammaCoefficients = FreeParamsVector.gamma;
+                FreeParamsVector.gamma = null;
             }
             else
             {
@@ -216,9 +197,21 @@ namespace Quantum.QAOA
            return betaCoefficients.Concat(gammaCoefficients).ToArray();
         }
 
+        public OptimalSolution getOptimalSolution()
+        {
+            OptimalSolution optimalSolution = new OptimalSolution
+            {
+                optimalVector = this.bestVector,
+                optimalValue = this.bestHamiltonian,
+                optimalBeta = this.bestBeta,
+                optimalGamma = this.bestGamma,
+            };
+
+            return optimalSolution;
+        }
+
         public OptimalSolution runOptimization()
         {
-            //double[] bigfreeParamsVector = convertUserDataTofreeParamsVector();
 
             Func<Double[], Double> objectiveFunction = calculateObjectiveFunction;
             
@@ -231,22 +224,13 @@ namespace Quantum.QAOA
                 var cobyla = new Cobyla(optimizerObjectiveFunction, constraints);
                 double[] freeParameters = setUpFreeParameters();
                 bool success = cobyla.Minimize(freeParameters);
-                Console.WriteLine("Was success?");
+                Console.WriteLine("Was optimization successful?");
                 Console.WriteLine(success);
+                Console.WriteLine("##################################");
 
             }
 
-            OptimalSolution optimalSolution = new OptimalSolution
-            {
-
-                optimalVector = this.bestVector,
-                optimalValue = this.bestHamiltonian,
-                optimalBeta = this.bestBeta,
-                optimalGamma = this.bestGamma,
-
-            };
-
-            return optimalSolution;
+            return getOptimalSolution();
         }
 
 
