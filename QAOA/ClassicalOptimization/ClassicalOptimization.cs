@@ -87,6 +87,18 @@ namespace Quantum.QAOA
 
             return hamiltonianValue;
         }
+
+        /// # Summary
+        /// Uses a quantum function to get a solution string from the QAOA that relies on the current values of beta and gamma vectors.
+        ///To get a reasonable estimate for the expectation value of a Hamiltonian that encodes the problem, we run the QAOA many times and calculate the expectation based on solutions obtained.
+        ///If the expectation of the Hamiltonian is smaller than our current best, we update our best solution to the current solution. The solution vector for the current best solution is the mode of boolean strings that we obtained from the QAOA.
+        ///
+        /// # Input
+        /// ## bigfreeParamsVector
+        /// Beta and gamma vectors concatenated.
+        ///
+        /// # Output
+        /// The expected value of a Hamiltonian that we calculated in this run.
         public Double calculateObjectiveFunction(double[] bigfreeParamsVector)
         {
             ClassicalOptimizationUtils.FreeParamsVector freeParamsVector = ClassicalOptimizationUtils.convertVectorIntoHalves(bigfreeParamsVector);
@@ -109,28 +121,27 @@ namespace Quantum.QAOA
                 for (int i = 0; i < numberOfIterations; i++)
                 {
                     IQArray<bool> result = QAOARunner.Run(qsim, problemInstance.ProblemSizeInBits, beta, gamma, oneLocalHamiltonianCoefficients, twoLocalHamiltonianCoefficients, p).Result;
-
                     allSolutionVectors.Add(result.ToArray());
                     string solutionVector = ClassicalOptimizationUtils.getBoolStringFromBoolArray(result.ToArray());
                     double hamiltonianValue = evaluateHamiltonian(solutionVector);
-                    hamiltonianExpectationValue += hamiltonianValue;
+                    hamiltonianExpectationValue += (hamiltonianValue/numberOfIterations);
 
                 }
-                hamiltonianExpectationValue /= numberOfIterations;
 
             }
-            String mostProbableSolutionVectorTemp = ClassicalOptimizationUtils.getModeFromBoolList(allSolutionVectors);
-            updateBestSolution(hamiltonianExpectationValue, mostProbableSolutionVectorTemp, freeParamsVector);
+            
+            updateBestSolution(hamiltonianExpectationValue, allSolutionVectors, freeParamsVector);
             printCurrentBestSolution();
 
 
             return hamiltonianExpectationValue;
         }
 
-        private void updateBestSolution(double hamiltonianExpectationValue, String mostProbableSolutionVectorTemp, ClassicalOptimizationUtils.FreeParamsVector freeParamsVector)
+        private void updateBestSolution(double hamiltonianExpectationValue, List<bool[]> allSolutionVectors, ClassicalOptimizationUtils.FreeParamsVector freeParamsVector)
         {
             if (hamiltonianExpectationValue < this.bestHamiltonian)
             {
+                String mostProbableSolutionVectorTemp = ClassicalOptimizationUtils.getModeFromBoolList(allSolutionVectors);
                 bestHamiltonian = hamiltonianExpectationValue;
                 bestVector = mostProbableSolutionVectorTemp;
                 bestBeta = freeParamsVector.beta;
@@ -170,6 +181,12 @@ namespace Quantum.QAOA
             return constraints;
             
         }
+
+        /// # Summary
+        /// We create beta and gamma vectors. If the user provided their set of parameters, we use them for the first run. Otherwise, we use randomly generated parameters.
+        ///
+        /// # Output
+        /// Initialized beta and gamma vectors concatenated.
         public double[] setUpFreeParameters()
         {
             double[] betaCoefficients;
@@ -210,6 +227,15 @@ namespace Quantum.QAOA
             return optimalSolution;
         }
 
+        /// # Summary
+        /// Uses a classical optimizer to change beta and gamma parameters so that the objective function is minimized. The optimization is performed some number of times to decrease the chance of getting stuck in a local minimum.
+        ///
+        /// # Output
+        /// Optimal solution to the optimization problem input by the user.
+        ///
+        /// # Remarks
+        /// Currently used optimizer is Cobyla which is a gradient-free optimization technique.
+        /// For the objective function Hamiltonian based on Z operators, the range of values in the gamma vector is 0 <= beta_i <= 2PI.
         public OptimalSolution runOptimization()
         {
 

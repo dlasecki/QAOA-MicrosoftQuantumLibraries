@@ -15,7 +15,7 @@ namespace Quantum.QAOA
 
             //EXAMPLES
 
-            //Quantum Santa
+            //Quantum Santa (http://quantumalgorithmzoo.org/traveling_santa/)
             double[] dtx = { 0.619193, 0.742566, 0.060035, -1.568955, 0.045490 };
             double[] dtz = { 3.182203, -1.139045, 0.221082, 0.537753, -0.417222 };
             double[] segmentCosts = { 4.70, 9.09, 9.03, 5.70, 8.02, 1.71 };
@@ -29,7 +29,7 @@ namespace Quantum.QAOA
             ProblemInstance quantumSanta = new ProblemInstance(dh, dJ);
 
 
-            //MaxCut medium.com/mdr-inc/qaoa-maxcut-using-blueqat-aaf33038f46e
+            //MaxCut (medium.com/mdr-inc/qaoa-maxcut-using-blueqat-aaf33038f46e)
             dh = new Double[] { 0,0,0,0,0};
             dJ = new Double[]{ 0,1,0,1,0,
                                0,0,1,0,0,

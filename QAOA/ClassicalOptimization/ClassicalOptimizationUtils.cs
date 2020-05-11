@@ -13,7 +13,18 @@ namespace Quantum.QAOA
             public Double[] gamma;
         }
 
-
+        /// # Summary
+        /// Returns a vector of random doubles in a range from 0 to maximum.
+        ///
+        /// # Input
+        /// ## length
+        /// Length of a random vector.
+        /// ## maximum
+        /// Maximum value of a random double.
+        /// 
+        /// # Output
+        /// A random vector of doubles.
+        
         public static double[] getRandomVector(int length, double maximum)
         {
             var rand = new Random();
@@ -25,6 +36,16 @@ namespace Quantum.QAOA
 
             return randomVector;
         }
+
+        /// # Summary
+        /// Return the most common boolean string from a list of boolean values.
+        ///
+        /// # Input
+        /// ## list
+        /// List of boolean values.
+        /// 
+        /// # Output
+        /// The most common boolean string.
 
         public static String getModeFromBoolList(List<bool[]> list)
         {
@@ -42,19 +63,29 @@ namespace Quantum.QAOA
                 }
 
             }
-            int maxi = 0;
+            int maximum = 0;
             String result = null;
             foreach (string key in counter.Keys)
             {
-                if (counter[key] > maxi)
+                if (counter[key] > maximum)
                 {
-                    maxi = counter[key];
+                    maximum = counter[key];
                     result = key;
                 }
             }
 
             return result;
         }
+
+        /// # Summary
+        /// Converts an array of bools to a boolean string.
+        ///
+        /// # Input
+        /// ## boolArray
+        /// An array of bools.
+        /// 
+        /// # Output
+        /// A boolean string.
 
         public static string getBoolStringFromBoolArray(bool[] boolArray)
         {
