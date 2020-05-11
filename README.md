@@ -17,7 +17,7 @@ Current limitations:
 
 - an optimization problem shall be encoded into a Hamiltonian consisting of Z operators,
 - support for up to 2-local Hamiltonians,
-- input consists of arrays of coefficients for 1-local and 2-local terms,
+- input consists of arrays of coefficients for 1-local and 2-local Hamiltonian terms,
 - a gradient-free Cobyla optimizer is used for finding good QAOA input parameters.
 
 The high-level diagram of the implementation (notation comes from the ([QAOA paper](https://arxiv.org/abs/1411.4028)):
