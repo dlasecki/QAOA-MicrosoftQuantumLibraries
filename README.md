@@ -20,7 +20,7 @@ Current limitations:
 - input consists of arrays of coefficients for 1-local and 2-local terms,
 - a gradient-free Cobyla optimizer is used for finding good QAOA input parameters.
 
-The high-level diagram of the implementation:
+The high-level diagram of the implementation (notation comes from the ([QAOA paper](https://arxiv.org/abs/1411.4028)):
 
 [![QAOA diagram](https://i.postimg.cc/sgryqr80/IMG-0202.jpg)](https://postimg.cc/XpQTBTnw)
 
