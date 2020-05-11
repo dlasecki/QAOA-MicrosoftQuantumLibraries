@@ -2,7 +2,7 @@
 
 # QAOA in Q#
 
-The project is still in progress. This readme will be extended once the project is ready.
+The project is still in progress. This readme will be extended as the project develops.
 
 This project provides a hybrid quantum-classical algorithm for solving optimization problems. 
 It includes a Q# implementation of the Quantum Approximate Optimization Algorithm ([QAOA](https://arxiv.org/abs/1411.4028)) together with a classical optimizer in C#.
@@ -11,7 +11,14 @@ The quantum objective function is currently evaluated on a simulator backend pro
 
 How to run it?
 1) Import this project to Microsoft Visual Studio or similar.
-2) Use Driver.cs to prepare your ProblemInstance and run the project.
+2) Use Driver.cs to prepare your ProblemInstance and run the project (some examples also provided).
+
+Current limitations:
+
+- an optimization problem shall be encoded into a Hamiltonian consisting of Z operators,
+- support for up to 2-local Hamiltonians,
+- input consists of arrays of coefficients for 1-local and 2-local terms,
+- a gradient-free Cobyla optimizer is used for finding good QAOA input parameters.
 
 The high-level diagram of the implementation:
 
