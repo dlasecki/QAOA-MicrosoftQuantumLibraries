@@ -3,7 +3,17 @@
    open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Intrinsic;
 
-    //this implementation in inspired by https://github.com/stephenjordan/qaoa_tsp
+    /// # Summary
+    /// Implements a unitary based on the mixing hamiltonian and applies it to qubits.
+    ///
+    /// # Input
+    /// ## qubits
+    /// Qubits that will be transformed by a unitary.
+    /// ## beta
+    /// Vector of coefficents for the unitary based on the mixing Hamiltonian.
+    ///
+    /// # References
+    /// This implementation in inspired by https://github.com/stephenjordan/qaoa_tsp.
 
 
     operation MixingHamiltonianEvolution(qubits: Qubit[], beta: Double) : Unit
@@ -13,6 +23,22 @@
             R(PauliX, -2.0*beta, qubits[i]);
         }
     }
+
+    /// # Summary
+    /// Implements a unitary based on the objective function hamiltonian and applies it to qubits.
+    ///
+    /// # Input
+    /// ## qubits
+    /// Qubits that will be transformed by a unitary.
+    /// ## gamma
+    /// Vector of coefficents for the unitary based on the objective function Hamiltonian.
+    /// ## h
+    /// Array of 1-local coefficents of the objective function Hamiltonian.
+    /// ## J
+    /// Array of 2-local coefficents of the objective function Hamiltonian.
+    ///
+    /// # References
+    /// This implementation in inspired by https://github.com/stephenjordan/qaoa_tsp.
 
     operation ObjectiveHamiltonianEvolution(qubits: Qubit[], gamma: Double, h: Double[], J: Double[]) : Unit
     {

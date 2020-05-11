@@ -21,13 +21,13 @@ namespace QAOATest.ClassicalOptimizationTests
 
             ClassicalOptimization classicalOptimization = new ClassicalOptimization(2, 3, problemInstance, 1, new Double[] { 1, 2, 3 }, new Double[] { 4, 5, 6 } );
 
-            FreeParamsVector result = classicalOptimization.convertfreeParamsVectorToVectors(new Double[] { 1, 2, 3, 4, 5, 6 });
+            ClassicalOptimizationUtils.FreeParamsVector result = ClassicalOptimizationUtils.convertVectorIntoHalves(new Double[] { 1, 2, 3, 4, 5, 6 });
 
-            FreeParamsVector dataVectors = new FreeParamsVector();
+            ClassicalOptimizationUtils.FreeParamsVector dataVectors = new ClassicalOptimizationUtils.FreeParamsVector();
             dataVectors.beta = new double[] { 1, 2, 3 };
             dataVectors.gamma = new double[] { 4, 5, 6 };
 
-            FreeParamsVector expectedResult = dataVectors;
+            ClassicalOptimizationUtils.FreeParamsVector expectedResult = dataVectors;
 
             CollectionAssert.AreEqual(expectedResult.beta, result.beta, "Hamiltonian beta value not calculated correctly.");
             CollectionAssert.AreEqual(expectedResult.gamma, result.gamma, "Hamiltonian gamma value not calculated correctly.");
