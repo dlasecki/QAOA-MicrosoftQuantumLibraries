@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Quantum.Simulation.Core;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -124,5 +125,31 @@ namespace Quantum.QAOA
 
             return freeParamsVector;
         }
+
+        public static void printCurrentBetaGamma(QArray<Double> beta, QArray<Double> gamma)
+        {
+            Console.WriteLine("Current beta vector:");
+            Console.WriteLine(beta);
+
+            Console.WriteLine("Current gamma vector:");
+            Console.WriteLine(gamma);
+
+        }
+
+        public static void printCurrentBestSolution(double bestHamiltonian, String bestVector)
+        {
+            Console.WriteLine("Current best fidelity");
+            Console.WriteLine(bestHamiltonian);
+            Console.WriteLine("Current best string");
+            Console.WriteLine(bestVector);
+        }
+
+        public static void printSuccess(bool success)
+        {
+            Console.WriteLine("Was optimization successful?");
+            Console.WriteLine(success);
+            Console.WriteLine("##################################");
+        }
+
     }
 }

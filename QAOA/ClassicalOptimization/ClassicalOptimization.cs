@@ -106,18 +106,16 @@ namespace Quantum.QAOA
             List<bool[]> allSolutionVectors = new List<bool[]>();
 
             var beta = new QArray<Double>(freeParamsVector.beta);
-            Console.WriteLine("Current beta vector:");
-            Console.WriteLine(beta);
-
             var gamma = new QArray<Double>(freeParamsVector.gamma);
-            Console.WriteLine("Current gamma vector:");
-            Console.WriteLine(gamma);
+
+            ClassicalOptimizationUtils.printCurrentBetaGamma(beta, gamma);
 
             var oneLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.OneLocalHamiltonianCoefficients);
             var twoLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.TwoLocalHamiltonianCoefficients);
 
             using (var qsim = new QuantumSimulator())
             {
+
                 for (int i = 0; i < numberOfIterations; i++)
                 {
                     IQArray<bool> result = QAOARunner.Run(qsim, problemInstance.ProblemSizeInBits, beta, gamma, oneLocalHamiltonianCoefficients, twoLocalHamiltonianCoefficients, p).Result;
@@ -131,7 +129,7 @@ namespace Quantum.QAOA
             }
             
             updateBestSolution(hamiltonianExpectationValue, allSolutionVectors, freeParamsVector);
-            printCurrentBestSolution();
+            ClassicalOptimizationUtils.printCurrentBestSolution(this.bestHamiltonian, this.bestVector);
 
             return hamiltonianExpectationValue;
         }
@@ -148,13 +146,6 @@ namespace Quantum.QAOA
             }
         }
 
-        private void printCurrentBestSolution()
-        {
-            Console.WriteLine("Current best fidelity");
-            Console.WriteLine(this.bestHamiltonian);
-            Console.WriteLine("Current best string");
-            Console.WriteLine(this.bestVector);
-        }
 
         /// # Summary
         /// Generates constraints for elements in beta and gamma vectors.
@@ -249,9 +240,7 @@ namespace Quantum.QAOA
                 var cobyla = new Cobyla(optimizerObjectiveFunction, constraints);
                 double[] freeParameters = setUpFreeParameters();
                 bool success = cobyla.Minimize(freeParameters);
-                Console.WriteLine("Was optimization successful?");
-                Console.WriteLine(success);
-                Console.WriteLine("##################################");
+                ClassicalOptimizationUtils.printSuccess(success);
 
             }
 
