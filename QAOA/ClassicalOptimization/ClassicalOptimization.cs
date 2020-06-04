@@ -104,20 +104,20 @@ namespace Quantum.QAOA
             ClassicalOptimizationUtils.FreeParamsVector freeParamsVector = ClassicalOptimizationUtils.convertVectorIntoHalves(bigfreeParamsVector);
             double hamiltonianExpectationValue = 0;
             List<bool[]> allSolutionVectors = new List<bool[]>();
+
+            var beta = new QArray<Double>(freeParamsVector.beta);
+            Console.WriteLine("Current beta vector:");
+            Console.WriteLine(beta);
+
+            var gamma = new QArray<Double>(freeParamsVector.gamma);
+            Console.WriteLine("Current gamma vector:");
+            Console.WriteLine(gamma);
+
+            var oneLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.OneLocalHamiltonianCoefficients);
+            var twoLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.TwoLocalHamiltonianCoefficients);
+
             using (var qsim = new QuantumSimulator())
             {
-                var beta = new QArray<Double>(freeParamsVector.beta);
-                Console.WriteLine("Current beta vector:");
-                Console.WriteLine(beta);
-
-                var gamma = new QArray<Double>(freeParamsVector.gamma);
-                Console.WriteLine("Current gamma vector:");
-                Console.WriteLine(gamma);
-
-                var oneLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.OneLocalHamiltonianCoefficients);
-                var twoLocalHamiltonianCoefficients = new QArray<Double>(problemInstance.TwoLocalHamiltonianCoefficients);
-
-
                 for (int i = 0; i < numberOfIterations; i++)
                 {
                     IQArray<bool> result = QAOARunner.Run(qsim, problemInstance.ProblemSizeInBits, beta, gamma, oneLocalHamiltonianCoefficients, twoLocalHamiltonianCoefficients, p).Result;
@@ -132,7 +132,6 @@ namespace Quantum.QAOA
             
             updateBestSolution(hamiltonianExpectationValue, allSolutionVectors, freeParamsVector);
             printCurrentBestSolution();
-
 
             return hamiltonianExpectationValue;
         }
