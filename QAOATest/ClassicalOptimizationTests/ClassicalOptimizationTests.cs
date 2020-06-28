@@ -7,8 +7,6 @@ using System.Reflection;
 namespace QAOATest.ClassicalOptimizationTests
 {
 
-    //TODO proper testing of private functions (the only public method is not deterministic)
-
     [TestClass]
     public class ClassicalOptimizationTest
     {
@@ -19,7 +17,7 @@ namespace QAOATest.ClassicalOptimizationTests
 
             ProblemInstance problemInstance = new ProblemInstance(new double[] { 1, 2, 2, -1 }, new double[] { 5, 0, 0, 1, 1, 5, 0, 0, 3, 4, -2, -2, 8, 7, -2, 12 });
 
-            ClassicalOptimization classicalOptimization = new ClassicalOptimization(2, 3, problemInstance, 1, new Double[] { 1, 2, 3 }, new Double[] { 4, 5, 6 } );
+            HybridQaoa classicalOptimization = new HybridQaoa(2, 3, problemInstance, 1, new Double[] { 1, 2, 3 }, new Double[] { 4, 5, 6 } );
 
             ClassicalOptimizationUtils.FreeParamsVector result = ClassicalOptimizationUtils.convertVectorIntoHalves(new Double[] { 1, 2, 3, 4, 5, 6 });
 
@@ -39,7 +37,7 @@ namespace QAOATest.ClassicalOptimizationTests
         {
             ProblemInstance problemInstance = new ProblemInstance(new double[] { 1, 2, 2, -1 }, new double[] { 5, 0, 0, 1, 1, 5, 0, 0, 3, 4, -2, -2, 8, 7, -2, 12 });
 
-            ClassicalOptimization classicalOptimization = new ClassicalOptimization(2, 3, problemInstance, 1, new Double[] { 1, 2, 3 }, new Double[] { 4, 5, 6 });
+            HybridQaoa classicalOptimization = new HybridQaoa(2, 3, problemInstance, 1, new Double[] { 1, 2, 3 }, new Double[] { 4, 5, 6 });
 
             Double result = classicalOptimization.evaluateHamiltonian("0011");
 
@@ -54,7 +52,7 @@ namespace QAOATest.ClassicalOptimizationTests
         {
             ProblemInstance problemInstance = new ProblemInstance(new double[] { 1, 1, 1, 1 }, new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 });
 
-            ClassicalOptimization classicalOptimization = new ClassicalOptimization(2, 1, problemInstance, 1, new double[] { 2 }, new double[] { 3 });
+            HybridQaoa classicalOptimization = new HybridQaoa(2, 1, problemInstance, 1, new double[] { 2 }, new double[] { 3 });
 
 
             string optimizationResult = "0101";

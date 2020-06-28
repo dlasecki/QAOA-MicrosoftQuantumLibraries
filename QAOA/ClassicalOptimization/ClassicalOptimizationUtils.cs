@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Quantum.Simulation.Core;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -124,5 +125,53 @@ namespace Quantum.QAOA
 
             return freeParamsVector;
         }
+
+        /// # Summary
+        /// Prints current values of beta and gamma vectors as optimization is being performed.
+        ///
+        /// # Input
+        /// ## beta
+        /// Beta vector of coefficients.
+        /// ## gamma
+        /// Gamma vector of coefficients.
+        public static void printCurrentBetaGamma(QArray<Double> beta, QArray<Double> gamma)
+        {
+            Console.WriteLine("Current beta vector:");
+            Console.WriteLine(beta);
+
+            Console.WriteLine("Current gamma vector:");
+            Console.WriteLine(gamma);
+
+        }
+
+        /// # Summary
+        /// Prints current values of the best fidelity and the best solution vector as optimization is being performed.
+        ///
+        /// # Input
+        /// ## bestHamiltonian
+        /// Best value of a Hamiltonian so far.
+        /// ## bestVector
+        /// Best solution vector that generates the above value of a Hamiltonian  so far.
+        public static void printCurrentBestSolution(double bestHamiltonian, String bestVector)
+        {
+            Console.WriteLine("Current best fidelity");
+            Console.WriteLine(bestHamiltonian);
+            Console.WriteLine("Current best string");
+            Console.WriteLine(bestVector);
+        }
+
+        /// # Summary
+        /// Prints whether an optimization finished successfully.
+        ///
+        /// # Input
+        /// ## success
+        /// A flag that indiciates whether an optimization finished successfully.
+        public static void printSuccess(bool success)
+        {
+            Console.WriteLine("Was optimization successful?");
+            Console.WriteLine(success);
+            Console.WriteLine("##################################");
+        }
+
     }
 }
