@@ -16,7 +16,7 @@
         return results;
     }
 
-    operation PhaseKickback(qubits: Qubit[], ancillaQubit: Qubit[], controlQubitsIndices: Int[], phaseExponent: Double) : Unit
+    operation RunPhaseKickback(qubits: Qubit[], ancillaQubit: Qubit[], controlQubitsIndices: Int[], phaseExponent: Double) : Unit
     {
         for(i in 0..Length(controlQubitsIndices)-1)
         {

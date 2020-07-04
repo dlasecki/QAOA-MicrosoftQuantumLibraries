@@ -118,7 +118,7 @@ namespace Quantum.QAOA
 
                 for (int i = 0; i < numberOfIterations; i++)
                 {
-                    IQArray<bool> result = QAOARunner.Run(qsim, problemInstance.ProblemSizeInBits, beta, gamma, oneLocalHamiltonianCoefficients, twoLocalHamiltonianCoefficients, p).Result;
+                    IQArray<bool> result = RunQaoa.Run(qsim, problemInstance.ProblemSizeInBits, beta, gamma, oneLocalHamiltonianCoefficients, twoLocalHamiltonianCoefficients, p).Result;
                     allSolutionVectors.Add(result.ToArray());
                     string solutionVector = ClassicalOptimizationUtils.getBoolStringFromBoolArray(result.ToArray());
                     double hamiltonianValue = evaluateHamiltonian(solutionVector);

@@ -16,7 +16,7 @@
     /// This implementation in inspired by https://github.com/stephenjordan/qaoa_tsp.
 
 
-    operation MixingHamiltonianEvolution(qubits: Qubit[], beta: Double) : Unit
+    operation EvolveWithMixingHamiltonian(qubits: Qubit[], beta: Double) : Unit
     {
         for(i in 0..Length(qubits)-1)
         {
@@ -40,7 +40,7 @@
     /// # References
     /// This implementation in inspired by https://github.com/stephenjordan/qaoa_tsp.
 
-    operation ObjectiveHamiltonianEvolution(qubits: Qubit[], gamma: Double, h: Double[], J: Double[]) : Unit
+    operation EvolveWithObjectiveHamiltonian(qubits: Qubit[], gamma: Double, h: Double[], J: Double[]) : Unit
     {
 	    let numberOfQubits = Length(qubits);
         using (ancillaQubit = Qubit[1])
@@ -53,7 +53,7 @@
             {
                 for (j in i+1..numberOfQubits-1)
                 {
-                    PhaseKickback(qubits, ancillaQubit, [i,j], 2.0*gamma*J[numberOfQubits*i+j]);
+                    RunPhaseKickback(qubits, ancillaQubit, [i,j], 2.0*gamma*J[numberOfQubits*i+j]);
                 }
             }
         }
