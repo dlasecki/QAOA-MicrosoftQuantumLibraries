@@ -1,15 +1,16 @@
-﻿using System;
+﻿using QAOA.ClassicalOptimization;
+using System;
 
 namespace Quantum.QAOA
 {
-    class Driver
+    class Examples
     {
 
 
         static void Main(string[] args)
         {
             //PARAMETERS
-            int numberOfIterations = 200;
+            int numberOfIterations = 50;
             int p = 3;
             int numberOfRandomStartingPoints = 3;
 
@@ -53,11 +54,16 @@ namespace Quantum.QAOA
                                0, 0};
             ProblemInstance maxCut3 = new ProblemInstance(dh, dJ);
 
+            dh = new Double[] {0, 0 };
+            dJ = new Double[]{ 0, 1,
+                               0, 0};
+            ProblemInstance maxCut4 = new ProblemInstance(dh, dJ);
+
             //END EXAMPLES
 
-            HybridQaoa cop = new HybridQaoa(numberOfIterations, p, maxCut1, numberOfRandomStartingPoints);
+            HybridQaoa cop = new HybridQaoa(numberOfIterations, p, quantumSanta, numberOfRandomStartingPoints);
 
-            OptimalSolution res = cop.runOptimization();
+            OptimalSolution res = cop.RunOptimization();
             Console.WriteLine(res.optimalVector);
 
             }
