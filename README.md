@@ -22,7 +22,7 @@ Current limitations:
 
 The high-level diagram of the implementation (notation comes from the [QAOA paper](https://arxiv.org/abs/1411.4028)):
 
-[![QAOA diagram](https://i.postimg.cc/sgryqr80/IMG-0202.jpg)](https://postimg.cc/XpQTBTnw)
+[![Flowchart](https://i.ibb.co/sQpRfQ8/qaoa-flowchart-drawio.png)](https://ibb.co/Cvp8cvR)
 
 Dependencies:
 
