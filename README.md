@@ -20,7 +20,7 @@ Current limitations:
 - input consists of arrays of coefficients for 1-local and 2-local Hamiltonian terms,
 - a gradient-free Cobyla optimizer is used for finding good QAOA input parameters.
 
-The flowchart of the implementation can be seen below. Please click to zoom in. Notation comes from the [QAOA paper](https://arxiv.org/abs/1411.4028)).
+The flowchart of the implementation can be seen below. Notation comes from the [QAOA paper](https://arxiv.org/abs/1411.4028)).
 
 <img src="https://github.com/dlasecki/QAOA-MicrosoftQuantumLibraries/blob/master/resources/flowchart.svg" alt="qaoa-flowchart" border="0" width="200%"/></a><br />
 Dependencies:
