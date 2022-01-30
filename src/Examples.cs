@@ -1,8 +1,9 @@
-﻿using QAOA.ClassicalOptimization;
-using System;
+﻿
 
-namespace Quantum.QAOA
+namespace Microsoft.Quantum.Qaoa
 {
+    using System;
+    using Microsoft.Quantum.Qaoa.QaoaHybrid;
     class Examples
     {
 
@@ -12,6 +13,7 @@ namespace Quantum.QAOA
             //PARAMETERS
             int numberOfIterations = 50;
             int p = 3;
+            int nHamiltonianApplications = 2;
             int numberOfRandomStartingPoints = 3;
 
             //EXAMPLES
@@ -27,7 +29,7 @@ namespace Quantum.QAOA
                             40.0,40.0,40.0,40.0,40.0,40.0,
                             40.0,40.0,40.0,40.0,40.0,20.0,
                             40.0,40.0,40.0,40.0,40.0,40.0};
-            ProblemInstance quantumSanta = new ProblemInstance(dh, dJ);
+            QaoaProblemInstance quantumSanta = new QaoaProblemInstance(dh, dJ);
 
 
             //MaxCut (medium.com/mdr-inc/qaoa-maxcut-using-blueqat-aaf33038f46e)
@@ -37,7 +39,7 @@ namespace Quantum.QAOA
                                0,0,0,1,1,
                                0,0,0,0,1,
                                0,0,0,0,0};
-            ProblemInstance maxCut1 = new ProblemInstance(dh, dJ);
+            QaoaProblemInstance maxCut1 = new QaoaProblemInstance(dh, dJ);
             
 
             //Rigetti MaxCut unit tests
@@ -46,25 +48,25 @@ namespace Quantum.QAOA
                               0,0,0.5,0,
                               0,0,0,2.5,
                               0,0,0,0};
-            ProblemInstance maxCut2 = new ProblemInstance(dh, dJ);
+            QaoaProblemInstance maxCut2 = new QaoaProblemInstance(dh, dJ);
 
             
             dh = new Double[] { 0.8, -0.5 };
             dJ = new Double[]{ 0, -1,
                                0, 0};
-            ProblemInstance maxCut3 = new ProblemInstance(dh, dJ);
+            QaoaProblemInstance maxCut3 = new QaoaProblemInstance(dh, dJ);
 
             dh = new Double[] {0, 0 };
             dJ = new Double[]{ 0, 1,
                                0, 0};
-            ProblemInstance maxCut4 = new ProblemInstance(dh, dJ);
+            QaoaProblemInstance maxCut4 = new QaoaProblemInstance(dh, dJ);
 
             //END EXAMPLES
 
-            HybridQaoa cop = new HybridQaoa(numberOfIterations, p, quantumSanta, numberOfRandomStartingPoints);
+            HybridQaoa cop = new HybridQaoa(numberOfIterations, nHamiltonianApplications, quantumSanta);
 
-            OptimalSolution res = cop.RunOptimization();
-            Console.WriteLine(res.optimalVector);
+            QaoaSolution res = cop.RunOptimization(numberOfRandomStartingPoints);
+            Console.WriteLine(res.SolutionVector);
 
             }
     }

@@ -1,10 +1,11 @@
-using System;
-using System.Collections.Generic;
+   // Licensed under the MIT License.
 
-using Microsoft.Jupyter.Core;
-
-namespace Microsoft.Quantum.QAOA.QAOATest.HybridQaoaTests
+namespace Microsoft.Quantum.Qaoa.JupyterTests
 {
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.Jupyter.Core;
+
     public class MockChannel : IChannel
     {
         public List<string> errors = new List<string>();
